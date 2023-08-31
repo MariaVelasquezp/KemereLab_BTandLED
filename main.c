@@ -8,7 +8,7 @@ bool state = true;
 /* Interrupt prototypes */
 CY_ISR_PROTO(WDTIsrHandler);
 
-#define SLEEP_INTERVAL_2S           10                       /* millisecond */
+#define SLEEP_INTERVAL              1000                      /* millisecond */
 #define ILO_FREQ                    32000                       /* Hz */
 #define LOG_ROW_INDEX               (CY_FLASH_NUMBER_ROWS - 1)  /* last row */
 
@@ -24,9 +24,26 @@ ApplicationPower applicationPower;
 
 int apiResult;
 
+void updateLed()
+{
+    CYBLE_GATTS_HANDLE_VALUE_NTF_T 	tempHandle;
+   
+    uint8 led_State = !LED_Read();
+    
+    if(CyBle_GetState() != CYBLE_STATE_CONNECTED)
+        return;
+    
+    tempHandle.attrHandle = CYBLE_FREQAMP_FREQUENCY_CHAR_HANDLE;
+  	tempHandle.value.val = (uint8 *) &led_State;
+    tempHandle.value.len = 1;
+    CyBle_GattsWriteAttributeValue(&tempHandle,0,&cyBle_connHandle,CYBLE_GATT_DB_LOCALLY_INITIATED);  
+}
+
+
 void AppCallBack(uint32 event, void* eventParam) 
 { 
-    CYBLE_BLESS_CLK_CFG_PARAMS_T clockConfig; 
+    CYBLE_BLESS_CLK_CFG_PARAMS_T clockConfig;
+    CYBLE_GATTS_WRITE_REQ_PARAM_T *wrReqParam;
      
     switch(event) 
     { 
@@ -56,8 +73,40 @@ void AppCallBack(uint32 event, void* eventParam)
       /* Other application-specific event handling here */ 
       case CYBLE_EVT_GAP_DEVICE_CONNECTED: 
        // LED_Write(1);
+        updateLed();
         break;
-    
+      
+        // Handle a write request
+    case CYBLE_EVT_GATTS_WRITE_REQ:
+        wrReqParam = (CYBLE_GATTS_WRITE_REQ_PARAM_T *) eventParam;
+
+        // Request write the LED value
+        if (wrReqParam->handleValPair.attrHandle == CYBLE_FREQAMP_FREQUENCY_CHAR_HANDLE)
+        {
+            // Only update the value and write the response if the requested write is allowed
+            if (CYBLE_GATT_ERR_NONE == CyBle_GattsWriteAttributeValue(&wrReqParam->handleValPair, 0, &cyBle_connHandle, CYBLE_GATT_DB_PEER_INITIATED))
+            {
+
+                // Interpret the received frequency value and control the LED
+                if (wrReqParam->handleValPair.value.val[0] == 0x48)
+                {
+                    // Blink the LED for feedback
+                    for (int i = 0; i < 5; i++) {
+                        LED_Write(1); // Turn LED ON
+                        CyDelay(500); // Delay for 500 ms
+                        LED_Write(0); // Turn LED OFF
+                        CyDelay(500); // Delay for 500 ms
+                    }
+                }
+                else if (wrReqParam->handleValPair.value.val[0] == 110)
+                {
+                    LED_Write(0); // Turn LED OFF
+                }
+                
+                CyBle_GattsWriteRsp(cyBle_connHandle);
+            }
+        }
+            
       case CYBLE_EVT_GAP_DEVICE_DISCONNECTED: 
         apiResult = CyBle_GappStartAdvertisement(CYBLE_ADVERTISING_FAST); 
         //LED_Write(0);
@@ -188,18 +237,11 @@ void InitWatchdog(uint16 sleep_interval)
 int main()
 {
     /* initialize watchdog */
-    InitWatchdog(SLEEP_INTERVAL_2S);
+    //InitWatchdog(SLEEP_INTERVAL);
     /* connect ISR routine to Watchdog interrupt */
-    isr_1_StartEx(WDTIsrHandler); // The "isr_WDT" prefix comes from our TopDesign
+    //isr_1_StartEx(WDTIsrHandler); // The "isr_WDT" prefix comes from our TopDesign
     /* set the highest priority to make ISR is executed in all condition */
-    isr_1_SetPriority(0);
-    
-    LED_Write(LIGHT_ON);
-        
-    isr_1_StartEx(WDTIsrHandler);
-
-    LED_Write(LIGHT_OFF);
-
+    //isr_1_SetPriority(0);
     
      /* Variable declarations */
      CYBLE_LP_MODE_T lpMode;
@@ -260,6 +302,6 @@ CY_ISR(WDTIsrHandler)
     /* clear watchdog counter before deep sleep */
     CySysWdtResetCounters(CY_SYS_WDT_COUNTER0_RESET);
         
-    /* clear interrupt flag to enable next interrupt */
+    /* clear interrupt flag to enable next interrupt*/ 
     CySysWdtClearInterrupt(CY_SYS_WDT_COUNTER0_INT);     
 }
