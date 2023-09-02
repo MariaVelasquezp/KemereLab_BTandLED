@@ -8,7 +8,7 @@ bool state = true;
 /* Interrupt prototypes */
 CY_ISR_PROTO(WDTIsrHandler);
 
-#define SLEEP_INTERVAL              1000                      /* millisecond */
+//#define SLEEP_INTERVAL              1000                      /* millisecond */
 #define ILO_FREQ                    32000                       /* Hz */
 #define LOG_ROW_INDEX               (CY_FLASH_NUMBER_ROWS - 1)  /* last row */
 
@@ -39,6 +39,26 @@ void updateLed()
     CyBle_GattsWriteAttributeValue(&tempHandle,0,&cyBle_connHandle,CYBLE_GATT_DB_LOCALLY_INITIATED);  
 }
 
+void InitWatchdog(uint16 sleep_interval)
+{
+    /*==============================================================================*/
+    /* configure counter 0 for wakeup interrupt                                     */
+    /*==============================================================================*/
+    /* Counter 0 of Watchdog time generates peridically interrupt to wakeup system */
+    CySysWdtWriteMode(CY_SYS_WDT_COUNTER0, CY_SYS_WDT_MODE_INT);
+    /* Set interval as desired value */
+	CySysWdtWriteMatch(CY_SYS_WDT_COUNTER0, ((uint32)(sleep_interval * ILO_FREQ) / 1000));
+    /* clear counter on match event */
+	CySysWdtWriteClearOnMatch(CY_SYS_WDT_COUNTER0, 1u);
+    
+    /*==============================================================================*/
+    /* enable watchdog                                                              */
+    /*==============================================================================*/
+    /* enable the counter 0 */
+    CySysWdtEnable(CY_SYS_WDT_COUNTER0_MASK);
+    /* check if counter 0 is enabled, otherwise keep looping here */
+    while(!CySysWdtReadEnabledStatus(CY_SYS_WDT_COUNTER0));
+}
 
 void AppCallBack(uint32 event, void* eventParam) 
 { 
@@ -88,19 +108,21 @@ void AppCallBack(uint32 event, void* eventParam)
             {
 
                 // Interpret the received frequency value and control the LED
-                if (wrReqParam->handleValPair.value.val[0] == 0x48)
+                if (wrReqParam->handleValPair.value.val[0] == 0x30)
                 {
-                    // Blink the LED for feedback
-                    for (int i = 0; i < 5; i++) {
-                        LED_Write(1); // Turn LED ON
-                        CyDelay(500); // Delay for 500 ms
-                        LED_Write(0); // Turn LED OFF
-                        CyDelay(500); // Delay for 500 ms
-                    }
+                    InitWatchdog(1000);   
                 }
-                else if (wrReqParam->handleValPair.value.val[0] == 110)
+                else if (wrReqParam->handleValPair.value.val[0] == 0x40)
                 {
-                    LED_Write(0); // Turn LED OFF
+                    InitWatchdog(500);
+                }
+                else if (wrReqParam->handleValPair.value.val[0] == 0x50)
+                {
+                    InitWatchdog(250);
+                }
+                else if (wrReqParam->handleValPair.value.val[0] == 0x60)
+                {
+                    InitWatchdog(100);
                 }
                 
                 CyBle_GattsWriteRsp(cyBle_connHandle);
@@ -109,7 +131,6 @@ void AppCallBack(uint32 event, void* eventParam)
             
       case CYBLE_EVT_GAP_DEVICE_DISCONNECTED: 
         apiResult = CyBle_GappStartAdvertisement(CYBLE_ADVERTISING_FAST); 
-        //LED_Write(0);
         break;
     } 
 } 
@@ -213,35 +234,14 @@ CYBLE_BLESS_STATE_ECO_ON) && applicationPower == DEEPSLEEP)
     CyExitCriticalSection(interruptStatus ); 
 }
 
-void InitWatchdog(uint16 sleep_interval)
-{
-    /*==============================================================================*/
-    /* configure counter 0 for wakeup interrupt                                     */
-    /*==============================================================================*/
-    /* Counter 0 of Watchdog time generates peridically interrupt to wakeup system */
-    CySysWdtWriteMode(CY_SYS_WDT_COUNTER0, CY_SYS_WDT_MODE_INT);
-    /* Set interval as desired value */
-	CySysWdtWriteMatch(CY_SYS_WDT_COUNTER0, ((uint32)(sleep_interval * ILO_FREQ) / 1000));
-    /* clear counter on match event */
-	CySysWdtWriteClearOnMatch(CY_SYS_WDT_COUNTER0, 1u);
-    
-    /*==============================================================================*/
-    /* enable watchdog                                                              */
-    /*==============================================================================*/
-    /* enable the counter 0 */
-    CySysWdtEnable(CY_SYS_WDT_COUNTER0_MASK);
-    /* check if counter 0 is enabled, otherwise keep looping here */
-    while(!CySysWdtReadEnabledStatus(CY_SYS_WDT_COUNTER0));
-}
-
 int main()
 {
     /* initialize watchdog */
     //InitWatchdog(SLEEP_INTERVAL);
     /* connect ISR routine to Watchdog interrupt */
-    //isr_1_StartEx(WDTIsrHandler); // The "isr_WDT" prefix comes from our TopDesign
+    isr_1_StartEx(WDTIsrHandler); // The "isr_WDT" prefix comes from our TopDesign
     /* set the highest priority to make ISR is executed in all condition */
-    //isr_1_SetPriority(0);
+    isr_1_SetPriority(0);
     
      /* Variable declarations */
      CYBLE_LP_MODE_T lpMode;
