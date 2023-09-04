@@ -1,0 +1,24 @@
+(DELAYFILE
+ (SDFVERSION "IEEE 1497 4.0")
+ (DATE "2023-08-31T02:48:08Z")
+ (DESIGN "LEDtest")
+ (VENDOR "Cypress Semiconductor")
+ (PROGRAM "PSoC Creator")
+ (VERSION " 4.4")
+ (DIVIDER .)
+ (TIMESCALE 1 ns)
+ (CELL
+  (CELLTYPE "LEDtest")
+  (INSTANCE *)
+  (DELAY
+   (ABSOLUTE
+    (INTERCONNECT ClockBlock.hfclk isr_1.clock (0.000:0.000:0.000))
+    (INTERCONNECT ClockBlock.hfclk \\ble\:bless_isr\\.clock (0.000:0.000:0.000))
+    (INTERCONNECT SRSS.interrupt_wdt isr_1.interrupt (1.000:1.000:1.000))
+    (INTERCONNECT \\ble\:cy_m0s8_ble\\.interrupt \\ble\:bless_isr\\.interrupt (1.000:1.000:1.000))
+    (INTERCONNECT LED\(0\)_PAD LED\(0\).pad_in (0.000:0.000:0.000))
+    (INTERCONNECT BOOST\(0\)_PAD BOOST\(0\).pad_in (0.000:0.000:0.000))
+   )
+  )
+ )
+)

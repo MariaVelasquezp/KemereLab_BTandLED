@@ -1,0 +1,18 @@
+--------------- Rebuild Started: 09/01/2023 14:48:47 Project: main.c, Configuration: ARM GCC 5.4-2016-q2-update Debug ---------------
+arm-none-eabi-gcc.exe -mcpu=cortex-m0 -mthumb -I. -IGenerated_Source\PSoC4 -Wa,-alh=.\CortexM0\ARM_GCC_541\Debug/main.lst -g -D DEBUG -D CY_CORE_ID=0 -Wall -ffunction-sections -ffat-lto-objects -Og -c main.c -o .\CortexM0\ARM_GCC_541\Debug\main.o
+main.c: In function 'AppCallBack':
+main.c:91:60: warning: comparison between pointer and integer
+                 if (wrReqParam->handleValPair.value.val[0] == "100")
+                                                            ^
+main.c:91:60: warning: comparison with string literal results in unspecified behavior [-Waddress]
+main.c: In function 'main':
+main.c:245:12: warning: unused variable 'interruptStatus' [-Wunused-variable]
+      uint8 interruptStatus;
+            ^
+main.c:244:26: warning: unused variable 'blessState' [-Wunused-variable]
+      CYBLE_BLESS_STATE_T blessState;
+                          ^
+main.c:243:22: warning: unused variable 'lpMode' [-Wunused-variable]
+      CYBLE_LP_MODE_T lpMode;
+                      ^
+--------------- Rebuild Succeeded: 09/01/2023 14:48:48 ---------------

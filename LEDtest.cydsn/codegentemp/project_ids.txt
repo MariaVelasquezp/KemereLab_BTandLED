@@ -1,0 +1,6 @@
+C:\MALU\RICE\Kemere Lab\LEDtest\LEDtest.cydsn\LEDtest.cyprj|43a1c947-ae85-4eb3-ae02-71031edeb0b1
+C:\Program Files (x86)\Cypress\PSoC Creator\4.4\PSoC Creator\psoc\content\default\CyAnnotationLibrary\CyAnnotationLibrary.cylib\CyAnnotationLibrary.cyprj|ff80ca25-9a08-4719-9098-4f54360ae544
+C:\Users\maluv\OneDrive\Documentos\PSoC Creator\4.4\Downloads ( 4.4).cylib\Downloads ( 4.4).cyprj|a0c65d13-8e12-4837-bb0e-0793d233b615
+C:\Program Files (x86)\Cypress\PSoC Creator\4.4\PSoC Creator\psoc\content\cycomponentlibraryupdates\CyComponentLibraryUpdates.cylib\CyComponentLibraryUpdates.cyprj|090f52fe-78bb-4e81-af48-55f9f257c59c
+C:\Program Files (x86)\Cypress\PSoC Creator\4.4\PSoC Creator\psoc\content\cycomponentlibrary\CyComponentLibrary.cylib\CyComponentLibrary.cyprj|eb8200c4-e3be-41b2-89f7-6b493ec601b5
+C:\Program Files (x86)\Cypress\PSoC Creator\4.4\PSoC Creator\psoc\content\cyprimitives\CyPrimitives.cylib\CyPrimitives.cyprj|f7561f13-adb8-4f8f-b62d-43186c66e530

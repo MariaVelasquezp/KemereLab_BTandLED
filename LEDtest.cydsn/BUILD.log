@@ -1,0 +1,24 @@
+--------------- Build Started: 09/01/2023 23:50:48 Project: LEDtest, Configuration: ARM GCC 5.4-2016-q2-update Debug ---------------
+The code generation step is up to date.
+arm-none-eabi-gcc.exe -mcpu=cortex-m0 -mthumb -I. -IGenerated_Source\PSoC4 -Wa,-alh=.\CortexM0\ARM_GCC_541\Debug/main.lst -g -D DEBUG -D CY_CORE_ID=0 -Wall -ffunction-sections -ffat-lto-objects -Og -c main.c -o .\CortexM0\ARM_GCC_541\Debug\main.o
+main.c: In function 'main':
+main.c:256:12: warning: unused variable 'interruptStatus' [-Wunused-variable]
+      uint8 interruptStatus;
+            ^
+main.c:255:26: warning: unused variable 'blessState' [-Wunused-variable]
+      CYBLE_BLESS_STATE_T blessState;
+                          ^
+main.c:254:22: warning: unused variable 'lpMode' [-Wunused-variable]
+      CYBLE_LP_MODE_T lpMode;
+                      ^
+arm-none-eabi-ar.exe -rs .\CortexM0\ARM_GCC_541\Debug\LEDtest.a .\CortexM0\ARM_GCC_541\Debug\isr_1.o .\CortexM0\ARM_GCC_541\Debug\CyFlash.o .\CortexM0\ARM_GCC_541\Debug\CyLib.o .\CortexM0\ARM_GCC_541\Debug\cyPm.o .\CortexM0\ARM_GCC_541\Debug\cyutils.o .\CortexM0\ARM_GCC_541\Debug\CyLFClk.o .\CortexM0\ARM_GCC_541\Debug\cy_em_eeprom.o .\CortexM0\ARM_GCC_541\Debug\LED.o .\CortexM0\ARM_GCC_541\Debug\LED_PM.o .\CortexM0\ARM_GCC_541\Debug\ble.o .\CortexM0\ARM_GCC_541\Debug\ble_gatt.o .\CortexM0\ARM_GCC_541\Debug\ble_eventHandler.o .\CortexM0\ARM_GCC_541\Debug\ble_HAL_INT.o .\CortexM0\ARM_GCC_541\Debug\ble_HAL_PVT.o .\CortexM0\ARM_GCC_541\Debug\ble_custom.o .\CortexM0\ARM_GCC_541\Debug\ble_bless_isr.o .\CortexM0\ARM_GCC_541\Debug\BOOST.o .\CortexM0\ARM_GCC_541\Debug\BOOST_PM.o .\CortexM0\ARM_GCC_541\Debug\CyBootAsmGnu.o
+arm-none-eabi-ar.exe: creating .\CortexM0\ARM_GCC_541\Debug\LEDtest.a
+arm-none-eabi-gcc.exe -Wl,--start-group -o "C:\MALU\RICE\Kemere Lab\LEDtest\LEDtest.cydsn\CortexM0\ARM_GCC_541\Debug\LEDtest.elf" .\CortexM0\ARM_GCC_541\Debug\main.o .\CortexM0\ARM_GCC_541\Debug\cyfitter_cfg.o .\CortexM0\ARM_GCC_541\Debug\cymetadata.o .\CortexM0\ARM_GCC_541\Debug\Cm0Start.o .\CortexM0\ARM_GCC_541\Debug\LEDtest.a "C:\Program Files (x86)\Cypress\PSoC Creator\4.4\PSoC Creator\psoc\content\CyComponentLibrary\CyComponentLibrary.cylib\BLE_v3_66\Library\gccCyBLEStack_BLE_SOC_PERIPHERAL.a" -mcpu=cortex-m0 -mthumb -L Generated_Source\PSoC4 -Wl,-Map,.\CortexM0\ARM_GCC_541\Debug/LEDtest.map -T Generated_Source\PSoC4\cm0gcc.ld -specs=nano.specs -Wl,--gc-sections -g -ffunction-sections -Og -ffat-lto-objects -Wl,--end-group
+cyelftool.exe -C "C:\MALU\RICE\Kemere Lab\LEDtest\LEDtest.cydsn\CortexM0\ARM_GCC_541\Debug\LEDtest.elf" --flash_row_size 128 --flash_size 131072 --flash_offset 0x00000000
+No ELF section .cychecksum found, creating one
+Application checksum calculated and stored in ELF section .cychecksum
+Checksum calculated and stored in ELF section .cymeta
+cyelftool.exe -S "C:\MALU\RICE\Kemere Lab\LEDtest\LEDtest.cydsn\CortexM0\ARM_GCC_541\Debug\LEDtest.elf"
+Flash used: 83328 of 131072 bytes (63,6 %).
+SRAM used: 10992 of 16384 bytes (67,1 %). Stack: 2048 bytes. Heap: 128 bytes.
+--------------- Build Succeeded: 09/01/2023 23:50:49 ---------------
