@@ -8,7 +8,6 @@ bool state = true;
 /* Interrupt prototypes */
 CY_ISR_PROTO(WDTIsrHandler);
 
-//#define SLEEP_INTERVAL              1000                      /* millisecond */
 #define ILO_FREQ                    32000                       /* Hz */
 #define LOG_ROW_INDEX               (CY_FLASH_NUMBER_ROWS - 1)  /* last row */
 
@@ -125,12 +124,35 @@ void AppCallBack(uint32 event, void* eventParam)
                     InitWatchdog(100);
                 }
                 
+                //AMPLITUDE VALUES
+                
+                if (wrReqParam->handleValPair.value.val[0] == 0x80)
+                {
+                    InitWatchdog(1000);   
+                }
+                else if (wrReqParam->handleValPair.value.val[0] == 0x90)
+                {
+                    InitWatchdog(500);
+                }
+                else if (wrReqParam->handleValPair.value.val[0] == 0x91)
+                {
+                    InitWatchdog(250);
+                }
+                else if (wrReqParam->handleValPair.value.val[0] == 0x92)
+                {
+                    InitWatchdog(100);
+                }
+                else if (wrReqParam->handleValPair.value.val[0] == 0x93)
+                {
+                    InitWatchdog(50);
+                }
+                
                 CyBle_GattsWriteRsp(cyBle_connHandle);
             }
         }
             
       case CYBLE_EVT_GAP_DEVICE_DISCONNECTED: 
-        apiResult = CyBle_GappStartAdvertisement(CYBLE_ADVERTISING_FAST); 
+        apiResult = CyBle_GappStartAdvertisement(CYBLE_ADVERTISING_FAST);
         break;
     } 
 } 
